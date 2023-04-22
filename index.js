@@ -5,6 +5,11 @@ const http = require('http');
 const url = require('url');
 
 // SERVER build
+// only executed once when code starts sync not async
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+const dataObject = JSON.parse(data);
+
+// This gets executed over and over since it starts the server
 const server = http.createServer((req, res) => {
   const pathName = req.url;
 
@@ -13,7 +18,8 @@ const server = http.createServer((req, res) => {
   } else if (pathName === '/product') {
     res.end('this is the product page');
   } else if (pathName === '/api') {
-    res.end('this is the product page');
+    res.writeHead(200, { 'Content-type': 'application/json' });
+    res.end(data);
   } else {
     res.writeHead(404, {
       'Content-type': 'text/html',
